@@ -1,10 +1,14 @@
-import express from "express";
 import dotenv from "dotenv";
+import express from "express";
 dotenv.config();
 import bodyParser from "body-parser";
 import ConsoleStamp from "console-stamp";
 
+import { initializeAuthentication } from "./auth/utils";
+
 const app = express();
+
+initializeAuthentication(app);
 
 const port = Number(process.env.PORT) || 3000;
 
@@ -23,7 +27,8 @@ app.use(bodyParser.json());
 
 
 app.get("/", (req, res) => {
-    res.send({ success: true, version: process.env.npm_package_version });
+    const isAuth = req.isAuthenticated();
+    res.send({ success: true, version: process.env.npm_package_version, isAuth });
 });
 
 app.listen(port, () => {
