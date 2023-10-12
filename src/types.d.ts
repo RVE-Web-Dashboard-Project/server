@@ -17,10 +17,14 @@ declare global {
       _err?: string
     }
   }
+}
 
-  namespace http {
-    interface ServerResponse {
-      _err?: string
-    }
+declare module "http" {
+  interface IncomingMessage {
+    _startTime: Date
+  }
+
+  interface ServerResponse {
+    _err?: string
   }
 }

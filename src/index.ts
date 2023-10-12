@@ -3,6 +3,8 @@ import express from "express";
 dotenv.config();
 import bodyParser from "body-parser";
 import ConsoleStamp from "console-stamp";
+import dateformat from "dateformat";
+import morgan from "morgan"; // console log every request
 
 import { initializeAuthentication } from "./auth/utils";
 import userRouter from "./components/user/user_router";
@@ -23,6 +25,11 @@ ConsoleStamp(console, {
     include: ["debug", "info", "log", "warn", "error", "fatal"],
     level: "debug",
 });
+
+// log every request to the console
+morgan.token("date", (req) => dateformat(req._startTime, "dd/mm/yyyy HH:MM:ss"));
+morgan.token("err", (req, res) => (res._err ? ` - [${res._err}]` : "\u200b"));
+app.use(morgan("\u001b[94m[:date[iso]]\u001b[0m [REQ]   :method :status :url:err - :response-time ms"));
 
 app.use(bodyParser.json());
 
