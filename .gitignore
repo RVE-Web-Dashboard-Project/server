@@ -135,3 +135,7 @@ build/
 # vscode/mac folders
 .vscode
 .DS_Store
+
+# database files
+prisma/*.db
+prisma/*.db-journal
