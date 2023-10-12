@@ -5,6 +5,7 @@ import bodyParser from "body-parser";
 import ConsoleStamp from "console-stamp";
 
 import { initializeAuthentication } from "./auth/utils";
+import userRouter from "./components/user/user_router";
 
 const app = express();
 
@@ -25,10 +26,13 @@ ConsoleStamp(console, {
 
 app.use(bodyParser.json());
 
+// add routers
+app.use(userRouter);
+
 
 app.get("/", (req, res) => {
     const isAuth = req.isAuthenticated();
-    res.send({ success: true, version: process.env.npm_package_version, isAuth });
+    res.send({ success: true, version: process.env.npm_package_version, isAuthenticated: isAuth });
 });
 
 app.listen(port, () => {

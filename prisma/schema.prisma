@@ -12,7 +12,8 @@ datasource db {
 
 model User {
   id        Int         @id @default(autoincrement())
-  name      String
+  name      String      @unique
+  password  String
   isAdmin   Boolean     @default(false)
   createdAt DateTime    @default(now())
   UserToken UserToken[]
@@ -20,7 +21,7 @@ model User {
 
 model UserToken {
   id        Int      @id @default(autoincrement())
-  token     String
+  token     String   @unique
   createdAt DateTime @default(now())
   userId    Int
   user      User     @relation(fields: [userId], references: [id])

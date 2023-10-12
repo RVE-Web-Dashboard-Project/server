@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/RVE-Web-Dashboard-Project/server#readme",
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.4",
     "@types/cors": "^2.8.14",
     "@types/express": "^4.17.19",
     "@types/jsonwebtoken": "^9.0.3",
@@ -38,6 +39,7 @@
   "dependencies": {
     "@prisma/client": "^5.4.2",
     "@types/passport": "^1.0.13",
+    "bcryptjs": "^2.4.3",
     "console-stamp": "^3.1.2",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
@@ -47,6 +49,7 @@
     "mariadb": "^3.2.1",
     "morgan": "^1.10.0",
     "passport": "^0.6.0",
-    "passport-jwt": "^4.0.1"
+    "passport-jwt": "^4.0.1",
+    "typia": "^5.2.2"
   }
 }
