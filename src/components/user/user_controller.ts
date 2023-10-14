@@ -29,7 +29,7 @@ export async function login(req: Request<unknown, unknown, LoginParams>, res: Re
     }
 
     // compare password with its stored hash
-    const passwordMatch = compare(req.body.password, user.password);
+    const passwordMatch = await compare(req.body.password, user.password);
     if (!passwordMatch) {
         res._err = "Invalid username or password";
         return res.status(400).send({ success: false, message: res._err });
