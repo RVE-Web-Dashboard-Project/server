@@ -34,7 +34,7 @@ app.use(morgan("\u001b[94m[:date[iso]]\u001b[0m [REQ]   :method :status :url:err
 app.use(bodyParser.json());
 
 // add routers
-app.use(userRouter);
+app.use("/user", userRouter);
 
 
 app.get("/", (req, res) => {
