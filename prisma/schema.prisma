@@ -26,3 +26,16 @@ model UserToken {
   userId    Int
   user      User     @relation(fields: [userId], references: [id])
 }
+
+model Coordinator {
+  id              Int               @id @default(autoincrement())
+  createdAt       DateTime          @default(now())
+  coordinatorNode CoordinatorNode[]
+}
+
+model CoordinatorNode {
+  id            Int         @id @default(autoincrement())
+  coordinatorId Int
+  createdAt     DateTime    @default(now())
+  coordinator   Coordinator @relation(fields: [coordinatorId], references: [id])
+}

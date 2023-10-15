@@ -1,0 +1,13 @@
+-- CreateTable
+CREATE TABLE "Coordinator" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- CreateTable
+CREATE TABLE "CoordinatorNode" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "coordinatorId" INTEGER NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "CoordinatorNode_coordinatorId_fkey" FOREIGN KEY ("coordinatorId") REFERENCES "Coordinator" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
