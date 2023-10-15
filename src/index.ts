@@ -6,7 +6,7 @@ import ConsoleStamp from "console-stamp";
 import dateformat from "dateformat";
 import morgan from "morgan"; // console log every request
 
-import { initializeAuthentication } from "./auth/utils";
+import { checkRequestAuthentication, initializeAuthentication } from "./auth/utils";
 import userRouter from "./components/user/user_router";
 
 const app = express();
@@ -37,9 +37,9 @@ app.use(bodyParser.json());
 app.use("/user", userRouter);
 
 
-app.get("/", (req, res) => {
-    const isAuth = req.isAuthenticated();
-    res.send({ success: true, version: process.env.npm_package_version, isAuthenticated: isAuth });
+app.get("/", async (req, res) => {
+    const isAuthenticated = await checkRequestAuthentication(req);
+    res.send({ success: true, version: process.env.npm_package_version, isAuthenticated });
 });
 
 app.listen(port, () => {
