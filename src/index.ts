@@ -7,6 +7,7 @@ import dateformat from "dateformat";
 import morgan from "morgan"; // console log every request
 
 import { checkRequestAuthentication, initializeAuthentication } from "./auth/utils";
+import coordinatorRouter from "./components/coordinator/coordinator_router";
 import userRouter from "./components/user/user_router";
 
 const app = express();
@@ -35,6 +36,7 @@ app.use(bodyParser.json());
 
 // add routers
 app.use("/user", userRouter);
+app.use("/coordinator", coordinatorRouter);
 
 
 app.get("/", async (req, res) => {
