@@ -1,9 +1,11 @@
 import express from "express";
 
-import { isAdminCheck } from "../../auth/middlewares";
+import { isAdminCheck, isAuthenticatedCheck } from "../../auth/middlewares";
 import * as USR from "./user_controller";
 
 const router = express.Router();
+
+router.get("/me", isAuthenticatedCheck, USR.getMe);
 
 router.post("/login", USR.login);
 router.post("/logout", USR.logout);

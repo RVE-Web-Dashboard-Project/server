@@ -10,6 +10,20 @@ const db = Database.getInstance();
 
 const JWT_EXPIRATION_PERIOD = process.env.JWT_TOKEN_EXPIRATION_DAYS + "d";
 
+export async function getMe(req: Request, res: Response) {
+    if (!req.user) {
+        res._err = "Unauthorized";
+        return res.status(401).send({ success: false, message: res._err });
+    }
+    const publicUserData = {
+        id: req.user.id,
+        name: req.user.name,
+        isAdmin: req.user.isAdmin,
+        createdAt: req.user.createdAt,
+    };
+    return res.status(200).send({ success: true, data: publicUserData });
+}
+
 export async function login(req: Request<unknown, unknown, LoginParams>, res: Response) {
     // check arguments existense
     if (!is<LoginParams>(req.body)) {
