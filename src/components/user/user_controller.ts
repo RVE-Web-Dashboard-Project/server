@@ -50,12 +50,11 @@ export async function login(req: Request<unknown, unknown, LoginParams>, res: Re
     }
 
     // create a new token
-    const publicUserData = {
+    const tokenUserData = {
         id: user.id,
         name: user.name,
-        isAdmin: user.isAdmin,
     };
-    const token = sign( { result: publicUserData }, process.env.JWT_SECRET, { expiresIn: JWT_EXPIRATION_PERIOD });
+    const token = sign( { result: tokenUserData }, process.env.JWT_SECRET, { expiresIn: JWT_EXPIRATION_PERIOD });
 
     // store token in database
     await db.userToken.create({
@@ -65,7 +64,14 @@ export async function login(req: Request<unknown, unknown, LoginParams>, res: Re
         },
     });
 
-    return res.status(200).send({ success: true, data: { id: user.id, token: token } });
+    const publicUserData = {
+        id: user.id,
+        name: user.name,
+        isAdmin: user.isAdmin,
+        createdAt: user.createdAt,
+    };
+
+    return res.status(200).send({ success: true, data: { ...publicUserData, token: token } });
 }
 
 export async function logout(req: Request, res: Response) {
