@@ -3,6 +3,7 @@ import express from "express";
 dotenv.config();
 import bodyParser from "body-parser";
 import ConsoleStamp from "console-stamp";
+import cors from "cors";
 import dateformat from "dateformat";
 import morgan from "morgan"; // console log every request
 
@@ -26,6 +27,16 @@ ConsoleStamp(console, {
     include: ["debug", "info", "log", "warn", "error", "fatal"],
     level: "debug",
 });
+
+// Set up CORS
+app.use(cors({
+    origin: process.env.CORS_ACCEPTED_DOMAINS.split(","),
+}));
+
+console.log(process.env.CORS_ACCEPTED_DOMAINS.split(","));
+
+// Remove x-powered-by header
+app.disable("x-powered-by");
 
 // log every request to the console
 morgan.token("date", (req) => dateformat(req._startTime, "dd/mm/yyyy HH:MM:ss"));
