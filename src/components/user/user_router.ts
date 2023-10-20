@@ -8,7 +8,7 @@ const router = express.Router();
 router.get("/me", isAuthenticatedCheck, USR.getMe);
 
 router.post("/login", USR.login);
-router.post("/logout", USR.logout);
+router.post("/logout", isAuthenticatedCheck, USR.logout);
 
 router.post("/", isAdminCheck, USR.createUser);
 

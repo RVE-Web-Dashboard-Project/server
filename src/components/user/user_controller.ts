@@ -76,7 +76,11 @@ export async function login(req: Request<unknown, unknown, LoginParams>, res: Re
 
 export async function logout(req: Request, res: Response) {
     // get token from request
-    const token = ExtractJwt.fromAuthHeaderAsBearerToken()(req)!;
+    const token = ExtractJwt.fromAuthHeaderAsBearerToken()(req);
+    if (token === null) {
+        res._err = "Missing token";
+        return res.status(400).send({ success: false, message: res._err });
+    }
     // delete token from database
     await db.userToken.delete({
         where: {
