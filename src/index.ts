@@ -10,8 +10,13 @@ import morgan from "morgan"; // console log every request
 import { checkRequestAuthentication, initializeAuthentication } from "./auth/utils";
 import coordinatorRouter from "./components/coordinator/coordinator_router";
 import userRouter from "./components/user/user_router";
+import { checkEnvironmentVariables } from "./env.checks";
 
 const app = express();
+
+if (!checkEnvironmentVariables()) {
+    process.exit(1);
+}
 
 initializeAuthentication(app);
 
