@@ -7,11 +7,11 @@ const requiredEnvVariables: EnvVariableNames = [
     "JWT_SECRET",
     "CORS_ACCEPTED_DOMAINS",
     "MQTT_BROKER_URL",
-    "MQTT_BROKER_PORT",
+    "MQTT_BROKER_TLS_PORT",
     "MQTT_SENDCMD_TOPIC",
     "MQTT_RECEIVE_TOPIC",
     "MQTT_USERNAME",
-    "MQTT_USER_ID",
+    "MQTT_CLIENT_ID",
     "MQTT_PASSWORD",
 ];
 
@@ -37,8 +37,8 @@ export function checkEnvironmentVariables() {
         return false;
     }
 
-    if (isNaN(Number(process.env.MQTT_BROKER_PORT))) {
-        console.error("FATAL ERROR: MQTT_BROKER_PORT is not a number");
+    if (isNaN(Number(process.env.MQTT_BROKER_TLS_PORT))) {
+        console.error("FATAL ERROR: MQTT_BROKER_TLS_PORT is not a number");
         return false;
     }
 
