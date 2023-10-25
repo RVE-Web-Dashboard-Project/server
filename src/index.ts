@@ -38,8 +38,6 @@ app.use(cors({
     origin: process.env.CORS_ACCEPTED_DOMAINS.split(","),
 }));
 
-console.log(process.env.CORS_ACCEPTED_DOMAINS.split(","));
-
 // Remove x-powered-by header
 app.disable("x-powered-by");
 
