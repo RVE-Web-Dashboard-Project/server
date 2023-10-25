@@ -7,11 +7,11 @@ interface ProcessEnvVariables {
   JWT_TOKEN_EXPIRATION_DAYS?: string;
   CORS_ACCEPTED_DOMAINS: string;
   MQTT_BROKER_URL: string;
-  MQTT_BROKER_PORT: string;
+  MQTT_BROKER_TLS_PORT: string;
   MQTT_SENDCMD_TOPIC: string;
   MQTT_RECEIVE_TOPIC: string;
   MQTT_USERNAME: string;
-  MQTT_USER_ID: string;
+  MQTT_CLIENT_ID: string;
   MQTT_PASSWORD: string;
 }
 
