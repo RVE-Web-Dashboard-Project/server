@@ -31,7 +31,7 @@ export default class MQTTClient {
         });
 
         this.client.on("error", (err) => {
-            console.error("MQTT error thrown:", err);
+            console.error("MQTT connection error thrown:", err);
         });
 
         this.client.on("connect", () => {
@@ -40,12 +40,18 @@ export default class MQTTClient {
             // connect to "send commands" and "receive" topics
             this.client.subscribe([process.env.MQTT_SENDCMD_TOPIC, process.env.MQTT_RECEIVE_TOPIC], (err, req) => {
                 if (err) {
-                    console.error(err);
+                    console.error("MQTT subscription failed:", err);
                     return;
                 }
                 console.log(`MQTT client subscribed to topics '${req.map((r) => r.topic).join("', '")}'`);
               });
         });
+
+        this.client.on("message", this.handleMessage.bind(this));
+    }
+
+    private async handleMessage(topic: string, payload: Buffer) {
+        console.log("MQTT received message:", topic, payload.toString());
     }
 
     get connected() {
@@ -54,5 +60,9 @@ export default class MQTTClient {
 
     get disconnecting() {
         return this.client.disconnecting;
+    }
+
+    async publish(topic: string, message: string) {
+        await this.client.publishAsync(topic, message);
     }
 }
