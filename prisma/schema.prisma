@@ -24,7 +24,7 @@ model UserToken {
   token     String   @unique
   createdAt DateTime @default(now())
   userId    Int
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Coordinator {
@@ -37,5 +37,5 @@ model CoordinatorNode {
   id            Int         @id @default(autoincrement())
   coordinatorId Int
   createdAt     DateTime    @default(now())
-  coordinator   Coordinator @relation(fields: [coordinatorId], references: [id])
+  coordinator   Coordinator @relation(fields: [coordinatorId], references: [id], onDelete: Cascade)
 }
