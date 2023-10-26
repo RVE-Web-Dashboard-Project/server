@@ -40,3 +40,21 @@ declare module "http" {
     _err?: string
   }
 }
+
+interface CommandParameter {
+  id: number;
+  name: string;
+  type: "int" | "float";
+  default: number;
+  minValue?: number;
+  maxValue?: number;
+}
+
+interface Command {
+  id: number;
+  name: string;
+  description: string;
+  targetType: "coordinator" | "node";
+  parameters: CommandParameter[];
+  responseType: "int" | "float" | "bool" | "ACK";
+}
