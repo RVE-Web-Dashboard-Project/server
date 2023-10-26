@@ -8,6 +8,7 @@ import dateformat from "dateformat";
 import morgan from "morgan"; // console log every request
 
 import { checkRequestAuthentication, initializeAuthentication } from "./auth/utils";
+import commandsRouter from "./components/commands/commands_router";
 import coordinatorRouter from "./components/coordinator/coordinator_router";
 import userRouter from "./components/user/user_router";
 import { checkEnvironmentVariables } from "./env.checks";
@@ -49,8 +50,9 @@ app.use(morgan("\u001b[94m[:date[iso]]\u001b[0m [REQ]   :method :status :url:err
 app.use(bodyParser.json());
 
 // add routers
-app.use("/user", userRouter);
+app.use("/commands", commandsRouter);
 app.use("/coordinator", coordinatorRouter);
+app.use("/user", userRouter);
 
 
 app.get("/", async (req, res) => {
