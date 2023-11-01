@@ -88,6 +88,62 @@ export async function logout(req: Request, res: Response) {
         },
     });
 
+    req.logout(function(err) {
+        if (err) {
+            console.log(err);
+        }
+    });
+
+    return res.status(200).send({ success: true });
+}
+
+export async function changePassword(req: Request<unknown, unknown, ChangePasswordParams>, res: Response) {
+    // check arguments existense
+    if (!is<ChangePasswordParams>(req.body)) {
+        res._err = "Missing or invalid arguments";
+        return res.status(400).send({ success: false, message: res._err });
+    }
+
+    // re-check user authentication
+    if (req.user === undefined) {
+        res._err = "Unauthorized";
+        return res.status(401).send({ success: false, message: res._err });
+    }
+
+    // compare previous password with its stored hash
+    const passwordMatch = await compare(req.body.oldPassword, req.user.password);
+    if (!passwordMatch) {
+        res._err = "Invalid password";
+        return res.status(400).send({ success: false, message: res._err });
+    }
+
+    // hash new password
+    const salt = genSaltSync(10);
+    const newPassword = hashSync(req.body.newPassword, salt);
+
+    // update user password
+    await db.user.update({
+        where: {
+            id: req.user.id,
+        },
+        data: {
+            password: newPassword,
+        },
+    });
+
+    // delete previous tokens from database
+    await db.userToken.deleteMany({
+        where: {
+            userId: req.user.id,
+        },
+    });
+
+    req.logout(function(err) {
+        if (err) {
+            console.log(err);
+        }
+    });
+
     return res.status(200).send({ success: true });
 }
 
