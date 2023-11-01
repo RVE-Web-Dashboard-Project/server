@@ -9,6 +9,7 @@ router.get("/me", isAuthenticatedCheck, USR.getMe);
 
 router.post("/login", USR.login);
 router.post("/logout", isAuthenticatedCheck, USR.logout);
+router.post("/edit-password", isAuthenticatedCheck, USR.changePassword);
 
 router.post("/", isAdminCheck, USR.createUser);
 
