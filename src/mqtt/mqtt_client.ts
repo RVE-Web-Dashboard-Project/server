@@ -53,10 +53,11 @@ export default class MQTTClient {
     }
 
     private async handleMessage(topic: string, payload: Buffer) {
-        console.log("MQTT received message:", topic, payload.toString());
+        console.log("MQTT received on topic", topic, "the message:", payload.toString());
     }
 
     private async publish(topic: string, message: string) {
+        console.debug("MQTT sending on topic", topic, "the message:", message);
         return await this.client.publishAsync(topic, message);
     }
 
@@ -74,7 +75,12 @@ export default class MQTTClient {
             "building_id": buildingId,
             "coord_id": coordinatorId,
             "node_id": nodeId,
-            "params": parameters,
+            "params": {
+                "param1": parameters[0] ?? 0,
+                "param2": parameters[1] ?? 0,
+                "param3": parameters[2] ?? 0,
+                "param4": parameters[3] ?? 0,
+            },
         };
         const res = await this.publish(process.env.MQTT_SENDCMD_TOPIC, JSON.stringify(data));
         console.debug("received data", res);
