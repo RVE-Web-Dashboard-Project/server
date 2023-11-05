@@ -39,23 +39,34 @@ export async function sendCommand(req: Request<unknown, unknown, SendCommandPara
         return res.status(404).send({ success: false, error: res._err });
     }
 
+    // check nodes parameter
+    const coordinatorToNodesMap = new Map<number, number[]>();
     if (command.targetType === "node") {
-        // check node ID existence
-        if (!req.body.nodeId) {
+        // check node IDs existence
+        if (req.body.nodeIds === undefined || req.body.nodeIds.length === 0) {
             res._err = "Node ID is required";
             return res.status(400).send({ success: false, error: res._err });
         }
 
-        // check if node ID is present in the coordinator
+        // check if each node ID is present in at least one coordinator
         const coordinatorNodes = await db.coordinatorNode.findMany({
             where: {
-                coordinatorId: req.body.coordinatorId,
+                coordinator: {
+                    id: {
+                        in: req.body.coordinatorIds,
+                    },
+                },
             },
         });
-        const nodeIds = coordinatorNodes.map((cn) => cn.id);
-        if (!nodeIds.includes(req.body.nodeId)) {
-            res._err = "No node found with this ID in this coordinator";
-            return res.status(400).send({ success: false, error: res._err });
+        for (const nodeId of req.body.nodeIds) {
+            const correspondingCoordinatorId = coordinatorNodes.filter((cn) => cn.id === nodeId).map((cn) => cn.coordinatorId)[0];
+            if (!correspondingCoordinatorId) {
+                res._err = `Node ${nodeId} not found`;
+                return res.status(404).send({ success: false, error: res._err });
+            }
+            coordinatorToNodesMap.set(
+                correspondingCoordinatorId, [...(coordinatorToNodesMap.get(correspondingCoordinatorId) ?? []), nodeId]
+            );
         }
     }
 
@@ -91,7 +102,16 @@ export async function sendCommand(req: Request<unknown, unknown, SendCommandPara
 
     // send command
     try {
-        await mqttClient.sendCommand(command.id, buildingId, req.body.coordinatorId, req.body.nodeId ?? 0, parameters);
+        for (const coordinatorId of req.body.coordinatorIds) {
+            if (command.targetType === "coordinator") {
+                // does not need a node ID
+                await mqttClient.sendCommand(command.id, buildingId, coordinatorId, 0, parameters);
+            } else {
+                for (const nodeId of coordinatorToNodesMap.get(coordinatorId) ?? []) {
+                    await mqttClient.sendCommand(command.id, buildingId, coordinatorId, nodeId, parameters);
+                }
+            }
+        }
     } catch (err) {
         console.error("Failed to send command:", err);
         res._err = "Failed to send command";

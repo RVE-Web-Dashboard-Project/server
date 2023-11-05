@@ -1,6 +1,6 @@
 interface SendCommandParams {
     commandId: Command["id"];
-    coordinatorId: number;
-    nodeId?: number;
+    coordinatorIds: number[];
+    nodeIds?: number[];
     parameters?: number[];
 }
