@@ -1,5 +1,7 @@
 import * as mqtt from "mqtt";
 
+import { Command } from "../types";
+
 export default class MQTTClient {
     private static instance: MQTTClient;
 
@@ -38,7 +40,7 @@ export default class MQTTClient {
             console.log("MQTT client connected");
 
             // connect to "send commands" and "receive" topics
-            this.client.subscribe([process.env.MQTT_SENDCMD_TOPIC, process.env.MQTT_RECEIVE_TOPIC], (err, req) => {
+            this.client.subscribe([process.env.MQTT_RECEIVE_TOPIC], (err, req) => {
                 if (err) {
                     console.error("MQTT subscription failed:", err);
                     return;
@@ -54,6 +56,10 @@ export default class MQTTClient {
         console.log("MQTT received message:", topic, payload.toString());
     }
 
+    private async publish(topic: string, message: string) {
+        return await this.client.publishAsync(topic, message);
+    }
+
     get connected() {
         return this.client.connected;
     }
@@ -62,7 +68,15 @@ export default class MQTTClient {
         return this.client.disconnecting;
     }
 
-    async publish(topic: string, message: string) {
-        await this.client.publishAsync(topic, message);
+    async sendCommand(commandId: Command["id"], buildingId: number, coordinatorId: number, nodeId: number, parameters: number[]) {
+        const data = {
+            "command": commandId,
+            "building_id": buildingId,
+            "coord_id": coordinatorId,
+            "node_id": nodeId,
+            "params": parameters,
+        };
+        const res = await this.publish(process.env.MQTT_SENDCMD_TOPIC, JSON.stringify(data));
+        console.debug("received data", res);
     }
 }
