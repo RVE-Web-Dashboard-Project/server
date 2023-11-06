@@ -3,7 +3,7 @@ import { Command } from "../types";
 export const COMMANDS_LIST: Command[] = [
     {
         id: 15,
-        name: "ping",
+        name: "Ping",
         description: "Check a node presence",
         targetType: "node",
         parameters: [],
