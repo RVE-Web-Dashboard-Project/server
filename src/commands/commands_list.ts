@@ -25,7 +25,7 @@ export const COMMANDS_LIST: Command[] = [
         parameters: [
             {
                 id: 1,
-                name: "restartCount",
+                name: "Restart count",
                 type: "int",
                 default: 0,
                 minValue: 0,
@@ -74,7 +74,7 @@ export const COMMANDS_LIST: Command[] = [
         parameters: [
             {
                 id: 1,
-                name: "samplingTime",
+                name: "Sampling time",
                 type: "int",
                 default: 60,
                 minValue: 60,
