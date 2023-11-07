@@ -50,8 +50,8 @@ export function getUserFromRequest(req: Request) {
     return new Promise<Express.User>((resolve, reject) => {
         const callback: AuthenticateCallback = (err, user) => {
             if (err) return reject(err);
-                if (!user) return reject(new Error("Invalid token"));
-                return resolve(user);
+            if (!user) return reject(new Error("Invalid token"));
+            return resolve(user);
         };
         passport.authenticate("jwt", { session: false }, callback)(req);
     });
