@@ -18,8 +18,10 @@ export async function isAdminCheck(req: Request, res: Response, next: NextFuncti
             if (!user.isAdmin) {
                 return res.status(403).json("Unauthorized");
             }
+            req.user = user;
             next();
         } catch (err) {
+            console.log(err);
             return res.status(401).json("Unauthorized");
         }
     }
