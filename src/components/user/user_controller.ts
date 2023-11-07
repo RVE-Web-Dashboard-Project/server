@@ -193,5 +193,13 @@ export async function inviteUser(req: Request<unknown, unknown, InviteUserParams
     });
 
     // return user data
-    return res.status(200).send({ success: true, data: { id: invitation.id, username: invitation.username, createdAt: invitation.createdAt } });
+    return res.status(200).send({ success: true, data: {
+        id: invitation.id,
+        username: invitation.username,
+        createdAt: invitation.createdAt,
+    } });
+}
+
+export async function acceptInvitation(req: Request<{code: string}>, res: Response) {
+    return res.status(404).send("Not implemented");
 }
