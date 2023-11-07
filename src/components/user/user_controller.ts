@@ -2,6 +2,7 @@ import { compare, genSaltSync, hashSync } from "bcryptjs";
 import { Request, Response } from "express";
 import { sign } from "jsonwebtoken";
 import { ExtractJwt } from "passport-jwt";
+import shortUUID from "short-uuid";
 import { is } from "typia";
 
 import Database from "../../database";
@@ -147,36 +148,50 @@ export async function changePassword(req: Request<unknown, unknown, ChangePasswo
     return res.status(200).send({ success: true });
 }
 
-export async function createUser(req: Request<unknown, unknown, CreateAccountParams>, res: Response) {
+export async function inviteUser(req: Request<unknown, unknown, InviteUserParams>, res: Response) {
+    if (req.user === undefined) {
+        res._err = "Unauthorized";
+        return res.status(401).send({ success: false, message: res._err });
+    }
+
     // check arguments existense
-    if (!is<CreateAccountParams>(req.body)) {
+    if (!is<InviteUserParams>(req.body)) {
         res._err = "Missing or invalid arguments";
         return res.status(400).send({ success: false, message: res._err });
     }
 
     // check if user already exists
-    const user = await db.user.findUnique({
+    const existingUser = await db.user.findUnique({
         where: {
             name: req.body.username,
         },
     });
-    if (user !== null) {
+    if (existingUser !== null) {
         res._err = "User already exists";
         return res.status(400).send({ success: false, message: res._err });
     }
+    // Check if an invitation with this username already exists
+    const existingInvitation = await db.userInvitation.findUnique({
+        where: {
+            username: req.body.username,
+        },
+    });
+    if (existingInvitation !== null) {
+        res._err = "Invitation already exists";
+        return res.status(400).send({ success: false, message: res._err });
+    }
 
-    // hash password
-    const salt = genSaltSync(10);
-    const password = hashSync(req.body.password, salt);
 
-    // create user
-    const newUser = await db.user.create({
+    // create invitation
+    const invitationId = shortUUID.generate();
+    const invitation = await db.userInvitation.create({
         data: {
-            name: req.body.username,
-            password: password,
+            id: invitationId,
+            username: req.body.username,
+            inviterId: req.user.id,
         },
     });
 
     // return user data
-    return res.status(200).send({ success: true, data: { id: newUser.id, name: newUser.name, isAdmin: newUser.isAdmin, createdAt: newUser.createdAt } });
+    return res.status(200).send({ success: true, data: { id: invitation.id, username: invitation.username, createdAt: invitation.createdAt } });
 }

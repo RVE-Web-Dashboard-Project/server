@@ -8,7 +8,6 @@ interface ChangePasswordParams {
     newPassword: string;
 }
 
-interface CreateAccountParams {
+interface InviteUserParams {
     username: string;
-    password: string;
 }

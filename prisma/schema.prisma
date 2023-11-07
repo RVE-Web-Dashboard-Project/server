@@ -11,12 +11,13 @@ datasource db {
 }
 
 model User {
-  id        Int         @id @default(autoincrement())
-  name      String      @unique
-  password  String
-  isAdmin   Boolean     @default(false)
-  createdAt DateTime    @default(now())
-  UserToken UserToken[]
+  id             Int              @id @default(autoincrement())
+  name           String           @unique
+  password       String
+  isAdmin        Boolean          @default(false)
+  createdAt      DateTime         @default(now())
+  UserToken      UserToken[]
+  UserInvitation UserInvitation[]
 }
 
 model UserToken {
@@ -25,6 +26,14 @@ model UserToken {
   createdAt DateTime @default(now())
   userId    Int
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model UserInvitation {
+  id        String   @id
+  username  String   @unique
+  inviterId Int
+  createdAt DateTime @default(now())
+  inviter   User     @relation(fields: [inviterId], references: [id], onDelete: Cascade)
 }
 
 model Coordinator {
