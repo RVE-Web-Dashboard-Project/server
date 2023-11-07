@@ -12,5 +12,6 @@ router.post("/logout", isAuthenticatedCheck, USR.logout);
 router.post("/edit-password", isAuthenticatedCheck, USR.changePassword);
 
 router.post("/invite", isAdminCheck, USR.inviteUser);
+router.post("/invitation/:code", USR.acceptInvitation);
 
 export default router;
