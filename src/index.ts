@@ -12,8 +12,12 @@ import commandsRouter from "./components/commands/commands_router";
 import coordinatorRouter from "./components/coordinator/coordinator_router";
 import userRouter from "./components/user/user_router";
 import { checkEnvironmentVariables } from "./env.checks";
+import { createWsApp } from "./ws/createWsApp";
 
+// instanciate express app
 const app = express();
+// add websocket server
+const server = createWsApp(app);
 
 if (!checkEnvironmentVariables()) {
     process.exit(1);
@@ -60,6 +64,6 @@ app.get("/", async (req, res) => {
     res.send({ success: true, version: process.env.npm_package_version, isAuthenticated });
 });
 
-app.listen(port, () => {
+server.listen(port, () => {
     console.info(`App V${process.env.npm_package_version} is running on http://localhost:${port} !`);
 });

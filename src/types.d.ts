@@ -41,6 +41,17 @@ declare module "http" {
   }
 }
 
+declare module "ws" {
+  interface WebSocket {
+    isAlive: boolean
+    user?: PrismaUser
+  }
+}
+
+interface IncomingWsMessage extends http.IncomingMessage {
+  user?: PrismaUser
+}
+
 interface CommandParameter {
   id: number;
   name: string;
