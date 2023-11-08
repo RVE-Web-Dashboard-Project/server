@@ -12,7 +12,8 @@ export function createWsApp(app: Express) {
         server,
         verifyClient: (info, cb) => {
             // check for token in headers when a new client connects
-            const token = info.req.headers.authorization as string | undefined;
+            let token = info.req.headers.authorization as string | undefined;
+            if (token?.startsWith("Bearer ")) token = token.slice(7);
             if (!token) {
                 console.info("WS client rejected: no token");
                 cb(false, 401, "Unauthorized");
@@ -23,7 +24,7 @@ export function createWsApp(app: Express) {
                             console.info("WS client rejected: invalid token");
                             cb(false, 401, "Unauthorized");
                         } else {
-                            console.info("WS client accepted for user", user.id);
+                            console.info(`WS client accepted (user ${user.id})`);
                             (info.req as IncomingWsMessage).user = user;
                             cb(true);
                         }
