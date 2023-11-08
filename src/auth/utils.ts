@@ -7,18 +7,23 @@ import Database from "../database";
 type App = ReturnType<typeof express>;
 
 const verifyCallback: VerifyCallbackWithRequest = async (req, jwtPayload, done) => {
-    const db = Database.getInstance();
-    // check user existence
-    const user = await db.user.findUnique({ where: { id: jwtPayload.result.id } });
-    if (!user) return done(null, false);
     // check token existence
     const token = ExtractJwt.fromAuthHeaderAsBearerToken()(req);
     if (token === null) return done(null, false);
-    const dbToken = await db.userToken.findUnique({ where: { token } });
-    if (!dbToken) return done(null, false);
+    // check token validity and get user
+    const user = await getUserFromToken(token);
+    if (!user) return done(null, false);
     // return success
     return done(null, user);
 };
+
+export async function getUserFromToken(token: string) {
+    const db = Database.getInstance();
+    // check token existence
+    const dbToken = await db.userToken.findUnique({ where: { token } });
+    if (!dbToken) return null;
+    return await db.user.findUnique({ where: { id: dbToken.userId } });
+}
 
 export function initializeAuthentication(app: App) {
     app.use(passport.initialize());
