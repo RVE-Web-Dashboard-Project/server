@@ -21,7 +21,6 @@ export default class MQTTClient {
         const clientId = process.env.MQTT_CLIENT_ID;
 
         const connectUrl = `${protocol}://${host}:${port}`;
-        console.log("connectUrl", connectUrl);
 
         this.client = mqtt.connect(connectUrl, {
             clientId,
