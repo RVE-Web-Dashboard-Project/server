@@ -4,6 +4,7 @@ import { Server as WsServer } from "ws";
 
 import { getUserFromToken } from "../auth/utils";
 import { IncomingWsMessage } from "../types";
+import { eventEmitter } from "./event_emitter";
 
 export function createWsApp(app: Express) {
     const server = http.createServer(app);
@@ -40,6 +41,17 @@ export function createWsApp(app: Express) {
     // print any error to console
     wss.on("error", (err) => {
         console.error("Websocket error", err);
+    });
+
+    eventEmitter.on("command_usage", (commandId) => {
+        wss.clients.forEach(client => {
+            if (client.readyState === 1) {
+                client.send(JSON.stringify({
+                    type: "command_usage",
+                    commandId,
+                }));
+            }
+        });
     });
 
     return server;
