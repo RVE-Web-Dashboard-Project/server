@@ -1,11 +1,14 @@
 import * as mqtt from "mqtt";
 
 import { Command } from "../types";
+import { eventEmitter } from "../ws/event_emitter";
 
 export default class MQTTClient {
     private static instance: MQTTClient;
 
     private client: mqtt.MqttClient;
+
+    private currentStatus = MQTTConnectionStatus.Disconnected;
 
     public static getInstance(): MQTTClient {
         if (!MQTTClient.instance) {
@@ -49,6 +52,9 @@ export default class MQTTClient {
         });
 
         this.client.on("message", this.handleMessage.bind(this));
+
+        // refresh connection status every 5 seconds
+        setInterval(this.refreshStatusAndEmits.bind(this), 5000);
     }
 
     private async handleMessage(topic: string, payload: Buffer) {
@@ -76,6 +82,15 @@ export default class MQTTClient {
             return MQTTConnectionStatus.Connected;
         }
         return MQTTConnectionStatus.Disconnected;
+    }
+
+    private refreshStatusAndEmits() {
+        const status = this.connectionStatus;
+        if (status !== this.currentStatus) {
+            this.currentStatus = status;
+            console.log("MQTT connection status changed to", status);
+            eventEmitter.emit("mqtt_connection_update", status);
+        }
     }
 
     async sendCommand(commandId: Command["id"], buildingId: number, coordinatorId: number, nodeId: number, parameters: number[]) {
