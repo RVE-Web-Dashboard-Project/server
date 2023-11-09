@@ -68,6 +68,16 @@ export default class MQTTClient {
         return this.client.disconnecting;
     }
 
+    get connectionStatus() {
+        if (this.client.disconnecting) {
+            return MQTTConnectionStatus.Disconnecting;
+        }
+        if (this.client.connected) {
+            return MQTTConnectionStatus.Connected;
+        }
+        return MQTTConnectionStatus.Disconnected;
+    }
+
     async sendCommand(commandId: Command["id"], buildingId: number, coordinatorId: number, nodeId: number, parameters: number[]) {
         const data = {
             "command": commandId,
@@ -84,4 +94,10 @@ export default class MQTTClient {
         const res = await this.publish(process.env.MQTT_SENDCMD_TOPIC, JSON.stringify(data));
         console.debug("received data", res);
     }
+}
+
+export enum MQTTConnectionStatus {
+    Connected = "connected",
+    Disconnecting = "disconnecting",
+    Disconnected = "disconnected",
 }
