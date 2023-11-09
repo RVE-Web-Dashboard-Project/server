@@ -5,7 +5,7 @@ import bodyParser from "body-parser";
 import ConsoleStamp from "console-stamp";
 import cors from "cors";
 import dateformat from "dateformat";
-import morgan from "morgan"; // console log every request
+import morgan from "morgan";
 
 import { checkRequestAuthentication, initializeAuthentication } from "./auth/utils";
 import commandsRouter from "./components/commands/commands_router";
@@ -51,6 +51,7 @@ morgan.token("date", (req) => dateformat(req._startTime, "dd/mm/yyyy HH:MM:ss"))
 morgan.token("err", (req, res) => (res._err ? ` - [${res._err}]` : "\u200b"));
 app.use(morgan("\u001b[94m[:date[iso]]\u001b[0m [REQ]   :method :status :url:err - :response-time ms"));
 
+// add json parser
 app.use(bodyParser.json());
 
 // add routers
@@ -59,11 +60,14 @@ app.use("/coordinator", coordinatorRouter);
 app.use("/user", userRouter);
 
 
+// root endpoint to get basic info
 app.get("/", async (req, res) => {
     const isAuthenticated = await checkRequestAuthentication(req);
     res.send({ success: true, version: process.env.npm_package_version, isAuthenticated });
 });
 
+
+// start server
 server.listen(port, () => {
     console.info(`App V${process.env.npm_package_version} is running on http://localhost:${port} !`);
 });
