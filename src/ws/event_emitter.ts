@@ -1,9 +1,11 @@
 import { EventEmitter } from "stream";
 
-interface MyEventEmitter {
-    emit(event: "command_usage", commandId: number): boolean;
+import { MQTTConnectionStatus } from "../mqtt/mqtt_client";
 
-    on(event: "command_usage", listener: (commandId: number) => void): this;
+interface MyEventEmitter {
+    emit(event: "mqtt_connection_update", status: MQTTConnectionStatus): boolean;
+
+    on(event: "mqtt_connection_update", listener: (status: MQTTConnectionStatus) => void): this;
 }
 
 export const eventEmitter: MyEventEmitter = new EventEmitter();

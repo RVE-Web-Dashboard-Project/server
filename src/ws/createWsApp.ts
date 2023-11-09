@@ -43,12 +43,12 @@ export function createWsApp(app: Express) {
         console.error("Websocket error", err);
     });
 
-    eventEmitter.on("command_usage", (commandId) => {
+    eventEmitter.on("mqtt_connection_update", (status) => {
         wss.clients.forEach(client => {
             if (client.readyState === 1) {
                 client.send(JSON.stringify({
-                    type: "command_usage",
-                    commandId,
+                    type: "mqtt_connection_update",
+                    status,
                 }));
             }
         });

@@ -4,19 +4,12 @@ import { is } from "typia";
 import { COMMANDS_LIST } from "../../commands/commands_list";
 import Database from "../../database";
 import MQTTClient from "../../mqtt/mqtt_client";
-import { eventEmitter } from "../../ws/event_emitter";
 
 const db = Database.getInstance();
 const mqttClient = MQTTClient.getInstance();
 
 export async function getBrokerConnectionStatus(req: Request, res: Response) {
-    if (mqttClient.connected) {
-        return res.status(200).send({ success: true, data: "connected" });
-    }
-    if (mqttClient.disconnecting) {
-        return res.status(200).send({ success: true, data: "disconnecting" });
-    }
-    return res.status(200).send({ success: true, data: "disconnected" });
+    return res.status(200).send({ success: true, data: mqttClient.connectionStatus });
 }
 
 export async function getCommandsList(req: Request, res: Response) {
@@ -119,6 +112,5 @@ export async function sendCommand(req: Request<unknown, unknown, SendCommandPara
         return res.status(500).send({ success: false, error: res._err });
     }
 
-    eventEmitter.emit("command_usage", command.id);
     return res.status(200).send({ success: true });
 }
