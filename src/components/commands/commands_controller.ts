@@ -85,7 +85,7 @@ export async function sendCommand(req: Request<unknown, unknown, SendCommandPara
         }
     }
 
-    // TODO: find building ID
+    // Building ID is currently ignored by coordinators, so we use a dummy value
     const buildingId = 1;
 
     // check MQTT broker connection
