@@ -200,6 +200,34 @@ export async function inviteUser(req: Request<unknown, unknown, InviteUserParams
     } );
 }
 
+export async function getInvitationInfo(req: Request<{code: string}>, res: Response) {
+    // get invitation from code
+    const invitation = await db.userInvitation.findUnique({
+        where: {
+            id: req.params.code,
+        },
+    });
+    if (invitation === null) {
+        res._err = "Invalid invitation code";
+        return res.status(404).send(res._err);
+    }
+
+    // get inviter from ID
+    const inviter = await db.user.findUnique({
+        where: {
+            id: invitation.inviterId,
+        },
+    });
+
+    return res.status(200).send({
+        id: invitation.id,
+        username: invitation.username,
+        inviter: inviter?.name,
+        inviterId: inviter?.id,
+        createdAt: invitation.createdAt,
+    });
+}
+
 export async function acceptInvitation(req: Request<{code: string}>, res: Response) {
     return res.status(404).send("Not implemented");
 }
