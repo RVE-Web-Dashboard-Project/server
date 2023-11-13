@@ -11,3 +11,7 @@ interface ChangePasswordParams {
 interface InviteUserParams {
     username: string;
 }
+
+interface AcceptInvitationParams {
+    password: string;
+}

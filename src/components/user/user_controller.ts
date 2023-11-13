@@ -228,6 +228,60 @@ export async function getInvitationInfo(req: Request<{code: string}>, res: Respo
     });
 }
 
-export async function acceptInvitation(req: Request<{code: string}>, res: Response) {
-    return res.status(404).send("Not implemented");
+export async function acceptInvitation(req: Request<{code: string}, unknown, AcceptInvitationParams>, res: Response) {
+    // get invitation from code
+    const invitation = await db.userInvitation.findUnique({
+        where: {
+            id: req.params.code,
+        },
+    });
+    if (invitation === null) {
+        res._err = "Invalid invitation code";
+        return res.status(404).send(res._err);
+    }
+
+    // check arguments existense
+    if (!is<AcceptInvitationParams>(req.body)) {
+        res._err = "Missing or invalid arguments";
+        return res.status(400).send(res._err);
+    }
+
+    // check if username is not already taken
+    const existingUser = await db.user.findUnique({
+        where: {
+            name: invitation.username,
+        },
+    });
+    if (existingUser !== null) {
+        res._err = "User already exists";
+        return res.status(400).send(res._err);
+    }
+
+    // hash password
+    const salt = genSaltSync(10);
+    const hashedPassword = hashSync(req.body.password, salt);
+
+    // create user
+    const user = await db.user.create({
+        data: {
+            name: invitation.username,
+            password: hashedPassword,
+        },
+    });
+
+    // delete invitation
+    await db.userInvitation.delete({
+        where: {
+            id: invitation.id,
+        },
+    });
+
+    // return user data
+    return res.status(200).send({
+        id: user.id,
+        name: user.name,
+        isAdmin: user.isAdmin,
+        createdAt: user.createdAt,
+    });
+
 }
