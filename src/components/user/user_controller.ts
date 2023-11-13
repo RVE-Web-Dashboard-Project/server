@@ -14,7 +14,7 @@ const JWT_EXPIRATION_PERIOD = process.env.JWT_TOKEN_EXPIRATION_DAYS + "d";
 export async function getMe(req: Request, res: Response) {
     if (!req.user) {
         res._err = "Unauthorized";
-        return res.status(401).send({ success: false, message: res._err });
+        return res.status(401).send(res._err);
     }
     const publicUserData = {
         id: req.user.id,
@@ -22,14 +22,14 @@ export async function getMe(req: Request, res: Response) {
         isAdmin: req.user.isAdmin,
         createdAt: req.user.createdAt,
     };
-    return res.status(200).send({ success: true, data: publicUserData });
+    return res.status(200).send(publicUserData);
 }
 
 export async function login(req: Request<unknown, unknown, LoginParams>, res: Response) {
     // check arguments existense
     if (!is<LoginParams>(req.body)) {
         res._err = "Missing or invalid arguments";
-        return res.status(400).send({ success: false, message: res._err });
+        return res.status(400).send(res._err);
     }
 
     // get user from username
@@ -40,14 +40,14 @@ export async function login(req: Request<unknown, unknown, LoginParams>, res: Re
     });
     if (user === null) {
         res._err = "Invalid username or password";
-        return res.status(400).send({ success: false, message: res._err });
+        return res.status(400).send(res._err);
     }
 
     // compare password with its stored hash
     const passwordMatch = await compare(req.body.password, user.password);
     if (!passwordMatch) {
         res._err = "Invalid username or password";
-        return res.status(400).send({ success: false, message: res._err });
+        return res.status(400).send(res._err);
     }
 
     // create a new token
@@ -72,7 +72,7 @@ export async function login(req: Request<unknown, unknown, LoginParams>, res: Re
         createdAt: user.createdAt,
     };
 
-    return res.status(200).send({ success: true, data: { ...publicUserData, token: token } });
+    return res.status(200).send({ ...publicUserData, token: token });
 }
 
 export async function logout(req: Request, res: Response) {
@@ -80,7 +80,7 @@ export async function logout(req: Request, res: Response) {
     const token = ExtractJwt.fromAuthHeaderAsBearerToken()(req);
     if (token === null) {
         res._err = "Missing token";
-        return res.status(400).send({ success: false, message: res._err });
+        return res.status(400).send(res._err);
     }
     // delete token from database
     await db.userToken.delete({
@@ -95,27 +95,27 @@ export async function logout(req: Request, res: Response) {
         }
     });
 
-    return res.status(200).send({ success: true });
+    return res.sendStatus(200);
 }
 
 export async function changePassword(req: Request<unknown, unknown, ChangePasswordParams>, res: Response) {
     // check arguments existense
     if (!is<ChangePasswordParams>(req.body)) {
         res._err = "Missing or invalid arguments";
-        return res.status(400).send({ success: false, message: res._err });
+        return res.status(400).send(res._err);
     }
 
     // re-check user authentication
     if (req.user === undefined) {
         res._err = "Unauthorized";
-        return res.status(401).send({ success: false, message: res._err });
+        return res.status(401).send(res._err);
     }
 
     // compare previous password with its stored hash
     const passwordMatch = await compare(req.body.oldPassword, req.user.password);
     if (!passwordMatch) {
         res._err = "Invalid password";
-        return res.status(400).send({ success: false, message: res._err });
+        return res.status(400).send(res._err);
     }
 
     // hash new password
@@ -145,19 +145,19 @@ export async function changePassword(req: Request<unknown, unknown, ChangePasswo
         }
     });
 
-    return res.status(200).send({ success: true });
+    return res.sendStatus(200);
 }
 
 export async function inviteUser(req: Request<unknown, unknown, InviteUserParams>, res: Response) {
     if (req.user === undefined) {
         res._err = "Unauthorized";
-        return res.status(401).send({ success: false, message: res._err });
+        return res.status(401).send(res._err);
     }
 
     // check arguments existense
     if (!is<InviteUserParams>(req.body)) {
         res._err = "Missing or invalid arguments";
-        return res.status(400).send({ success: false, message: res._err });
+        return res.status(400).send(res._err);
     }
 
     // check if user already exists
@@ -168,7 +168,7 @@ export async function inviteUser(req: Request<unknown, unknown, InviteUserParams
     });
     if (existingUser !== null) {
         res._err = "User already exists";
-        return res.status(400).send({ success: false, message: res._err });
+        return res.status(400).send(res._err);
     }
     // Check if an invitation with this username already exists
     const existingInvitation = await db.userInvitation.findUnique({
@@ -178,7 +178,7 @@ export async function inviteUser(req: Request<unknown, unknown, InviteUserParams
     });
     if (existingInvitation !== null) {
         res._err = "Invitation already exists";
-        return res.status(400).send({ success: false, message: res._err });
+        return res.status(400).send(res._err);
     }
 
 
@@ -193,11 +193,11 @@ export async function inviteUser(req: Request<unknown, unknown, InviteUserParams
     });
 
     // return user data
-    return res.status(200).send({ success: true, data: {
+    return res.status(200).send({
         id: invitation.id,
         username: invitation.username,
         createdAt: invitation.createdAt,
-    } });
+    } );
 }
 
 export async function acceptInvitation(req: Request<{code: string}>, res: Response) {

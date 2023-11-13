@@ -63,7 +63,7 @@ app.use("/user", userRouter);
 // root endpoint to get basic info
 app.get("/", async (req, res) => {
     const isAuthenticated = await checkRequestAuthentication(req);
-    res.send({ success: true, version: process.env.npm_package_version, isAuthenticated });
+    res.send({ version: process.env.npm_package_version, isAuthenticated });
 });
 
 

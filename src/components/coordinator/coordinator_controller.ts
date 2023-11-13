@@ -16,5 +16,5 @@ export async function getNodes(req: Request, res: Response) {
         coordinatorNodes[node.coordinatorId].push(node.id);
     });
 
-    return res.status(200).send({ success: true, data: coordinatorNodes });
+    return res.status(200).send(coordinatorNodes);
 }
