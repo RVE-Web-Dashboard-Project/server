@@ -276,12 +276,28 @@ export async function acceptInvitation(req: Request<{code: string}, unknown, Acc
         },
     });
 
+    // create token
+    const tokenUserData = {
+        id: user.id,
+        name: user.name,
+    };
+    const token = sign( { result: tokenUserData }, process.env.JWT_SECRET, { expiresIn: JWT_EXPIRATION_PERIOD });
+
+    // store token in database
+    await db.userToken.create({
+        data: {
+            token: token,
+            userId: user.id,
+        },
+    });
+
     // return user data
     return res.status(200).send({
         id: user.id,
         name: user.name,
         isAdmin: user.isAdmin,
         createdAt: user.createdAt,
+        token: token,
     });
 
 }
