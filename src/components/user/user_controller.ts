@@ -89,12 +89,6 @@ export async function logout(req: Request, res: Response) {
         },
     });
 
-    req.logout(function(err) {
-        if (err) {
-            console.log(err);
-        }
-    });
-
     return res.sendStatus(200);
 }
 
@@ -137,12 +131,6 @@ export async function changePassword(req: Request<unknown, unknown, ChangePasswo
         where: {
             userId: req.user.id,
         },
-    });
-
-    req.logout(function(err) {
-        if (err) {
-            console.log(err);
-        }
     });
 
     return res.sendStatus(200);
