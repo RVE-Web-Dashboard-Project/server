@@ -6,6 +6,24 @@ import { getUserFromToken } from "../auth/utils";
 import { IncomingWsMessage } from "../types";
 import { eventEmitter } from "./event_emitter";
 
+/**
+ * Try to get an authentication token from the "Authorization" or "Sec-Websocket-Protocol" headers
+ * @param headers the headers of the incoming request
+ */
+function getTokenFromWsHeaders(headers: http.IncomingHttpHeaders) {
+    let token = headers.authorization as string | undefined;
+     if (!token) {
+        token = headers["sec-websocket-protocol"] as string | undefined;
+        if (token?.startsWith("Authorization, ")) {
+            token = token.slice(15);
+        }
+    } else if (token.startsWith("Bearer ")) {
+        token = token.slice(7);
+    }
+    return token;
+
+}
+
 export function createWsApp(app: Express) {
     const server = http.createServer(app);
 
@@ -13,8 +31,7 @@ export function createWsApp(app: Express) {
         server,
         verifyClient: (info, cb) => {
             // check for token in headers when a new client connects
-            let token = info.req.headers.authorization as string | undefined;
-            if (token?.startsWith("Bearer ")) token = token.slice(7);
+            const token = getTokenFromWsHeaders(info.req.headers);
             if (!token) {
                 console.info("WS client rejected: no token");
                 cb(false, 401, "Unauthorized");
