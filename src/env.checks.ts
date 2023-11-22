@@ -42,5 +42,10 @@ export function checkEnvironmentVariables() {
         return false;
     }
 
+    if (process.env.NODE_ENV !== undefined && !["development", "production"].includes(process.env.NODE_ENV)) {
+        console.error("FATAL ERROR: NODE_ENV is not valid");
+        return false;
+    }
+
     return true;
 }
