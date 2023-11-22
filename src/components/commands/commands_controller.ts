@@ -4,6 +4,7 @@ import { is } from "typia";
 import { COMMANDS_LIST } from "../../commands/commands_list";
 import Database from "../../database";
 import MQTTClient from "../../mqtt/mqtt_client";
+import { eventEmitter } from "../../ws/event_emitter";
 
 const db = Database.getInstance();
 const mqttClient = MQTTClient.getInstance();
@@ -110,4 +111,14 @@ export async function sendCommand(req: Request<unknown, unknown, SendCommandPara
     }
 
     return res.sendStatus(200);
+}
+
+export async function testWSConnection(req: Request, res: Response) {
+    if (!req.body || Object.keys(req.body).length === 0) {
+        res._err = "Missing JSON body";
+        return res.status(400).send(res._err);
+    }
+    console.debug("received", JSON.stringify(req.body));
+    eventEmitter.emit("test_body", req.body);
+    res.sendStatus(202);
 }
