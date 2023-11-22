@@ -61,14 +61,26 @@ export function createWsApp(app: Express) {
     });
 
     eventEmitter.on("mqtt_connection_update", (status) => {
+        const data = JSON.stringify({
+            type: "mqtt_connection_update",
+            status,
+        });
         wss.clients.forEach(client => {
             if (client.readyState === 1) {
-                client.send(JSON.stringify({
-                    type: "mqtt_connection_update",
-                    status,
-                }));
+                client.send(data);
             }
         });
+    });
+
+    eventEmitter.on("test_body", (json) => {
+        if (process.env.NODE_ENV === "development") {
+            const data = JSON.stringify(json);
+            wss.clients.forEach(client => {
+                if (client.readyState === 1) {
+                    client.send(data);
+                }
+            });
+        }
     });
 
     return server;
