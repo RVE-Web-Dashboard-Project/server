@@ -125,8 +125,8 @@ export interface GetSamplingStateResponse {
 }
 
 
-export type ReceivedMessage = NoAckResponse
-    | AckResponse
+export type MQTTReceivedMessage = AckResponse
+    | NoAckResponse
     | PingResponse
     | GetRestartCountResponse
     | SetRestartCountResponse
