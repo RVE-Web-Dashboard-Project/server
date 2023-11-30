@@ -74,7 +74,7 @@ export function createWsApp(app: Express) {
 
     eventEmitter.on("mqtt_response_received", (data) => {
         const responseHasNoNode = [40, 45, 50, 55, 60, 65].includes(data.command);
-        const responseHasNoValue = [15, 25, 35, 50, 55].includes(data.command);
+        const responseHasNoValue = [5, 10, 15, 25, 35, 50, 55].includes(data.command);
         const cleanData = {
             ...data,
             "node_id": responseHasNoNode ? undefined : data.node_id,
