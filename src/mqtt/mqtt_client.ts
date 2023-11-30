@@ -1,7 +1,9 @@
 import * as mqtt from "mqtt";
+import { is } from "typia";
 
 import { Command } from "../types";
 import { eventEmitter } from "../ws/event_emitter";
+import { MQTTConnectionStatus, ReceivedMessage } from "./mqtt_types";
 
 export default class MQTTClient {
     private static instance: MQTTClient;
@@ -58,7 +60,19 @@ export default class MQTTClient {
     }
 
     private async handleMessage(topic: string, payload: Buffer) {
+        let data;
+        try {
+            data = JSON.parse(payload.toString());
+        } catch (e) {
+            console.error("MQTT received malformed message:", payload.toString());
+            return;
+        }
+        if (!is<ReceivedMessage>(data)) {
+            console.error("MQTT received malformed message:", payload.toString());
+            return;
+        }
         console.log("MQTT received on topic", topic, "the message:", payload.toString());
+
     }
 
     private async publish(topic: string, message: string) {
@@ -106,13 +120,6 @@ export default class MQTTClient {
                 "param4": parameters[3] ?? 0,
             },
         };
-        const res = await this.publish(process.env.MQTT_SENDCMD_TOPIC, JSON.stringify(data));
-        console.debug("received data", res);
+        await this.publish(process.env.MQTT_SENDCMD_TOPIC, JSON.stringify(data));
     }
-}
-
-export enum MQTTConnectionStatus {
-    Connected = "connected",
-    Disconnecting = "disconnecting",
-    Disconnected = "disconnected",
 }

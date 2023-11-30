@@ -1,6 +1,6 @@
 import { EventEmitter } from "stream";
 
-import { MQTTConnectionStatus } from "../mqtt/mqtt_client";
+import { MQTTConnectionStatus } from "../mqtt/mqtt_types";
 
 interface MyEventEmitter {
     emit(event: "mqtt_connection_update", status: MQTTConnectionStatus): boolean;
