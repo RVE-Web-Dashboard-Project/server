@@ -3,7 +3,7 @@ import { is } from "typia";
 
 import { Command } from "../types";
 import { eventEmitter } from "../ws/event_emitter";
-import { MQTTConnectionStatus, ReceivedMessage } from "./mqtt_types";
+import { MQTTConnectionStatus, MQTTReceivedMessage } from "./mqtt_types";
 
 export default class MQTTClient {
     private static instance: MQTTClient;
@@ -67,11 +67,12 @@ export default class MQTTClient {
             console.error("MQTT received malformed message:", payload.toString());
             return;
         }
-        if (!is<ReceivedMessage>(data)) {
+        if (!is<MQTTReceivedMessage>(data)) {
             console.error("MQTT received malformed message:", payload.toString());
             return;
         }
         console.log("MQTT received on topic", topic, "the message:", payload.toString());
+        eventEmitter.emit("mqtt_response_received", data);
 
     }
 
