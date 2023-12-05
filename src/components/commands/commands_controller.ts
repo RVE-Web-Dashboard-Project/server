@@ -31,6 +31,12 @@ export async function sendCommand(req: Request<unknown, unknown, SendCommandPara
         return res.status(404).send(res._err);
     }
 
+    // check coordinators count
+    if (req.body.coordinatorIds.length === 0) {
+        res._err = "At least one coordinator ID is required";
+        return res.status(400).send(res._err);
+    }
+
     // check nodes parameter
     const coordinatorToNodesMap = new Map<number, number[]>();
     if (command.targetType === "node") {
