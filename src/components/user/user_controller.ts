@@ -147,3 +147,40 @@ export async function editPassword(req: Request<unknown, unknown, ChangePassword
     return res.sendStatus(200);
 }
 
+export async function deleteMe(req: Request<unknown, unknown, DeleteMyAccountParams>, res: Response) {
+    // re-check user authentication
+    if (req.user === undefined) {
+        res._err = "Unauthorized";
+        return res.status(401).send(res._err);
+    }
+
+    // check arguments existense
+    if (!is<DeleteMyAccountParams>(req.body)) {
+        res._err = "Missing or invalid arguments";
+        return res.status(400).send(res._err);
+    }
+
+    // compare previous password with its stored hash
+    const passwordMatch = await compare(req.body.password, req.user.password);
+    if (!passwordMatch) {
+        res._err = "Invalid password";
+        return res.status(400).send(res._err);
+    }
+
+    // delete user
+    await db.user.delete({
+        where: {
+            id: req.user.id,
+        },
+    });
+
+    // delete user tokens
+    await db.userToken.deleteMany({
+        where: {
+            userId: req.user.id,
+        },
+    });
+
+    return res.sendStatus(200);
+}
+

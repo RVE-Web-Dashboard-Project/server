@@ -7,3 +7,7 @@ interface ChangePasswordParams {
     oldPassword: string;
     newPassword: string;
 }
+
+interface DeleteMyAccountParams {
+    password: string;
+}
