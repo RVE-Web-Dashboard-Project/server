@@ -149,6 +149,18 @@ export async function listUsers(req: Request, res: Response) {
 }
 
 
+export async function listInvitations(req: Request, res: Response) {
+    const invitations = await db.userInvitation.findMany({
+        select: {
+            id: true,
+            username: true,
+            inviterId: true,
+            createdAt: true,
+        },
+    });
+    return res.status(200).send(invitations);
+}
+
 export async function inviteUser(req: Request<unknown, unknown, InviteUserParams>, res: Response) {
     if (req.user === undefined) {
         res._err = "Unauthorized";
