@@ -184,3 +184,45 @@ export async function deleteMe(req: Request<unknown, unknown, DeleteMyAccountPar
     return res.sendStatus(200);
 }
 
+export async function deleteUser(req: Request<{id: string}>, res: Response) {
+    // convert id to number
+    const userId = parseInt(req.params.id);
+    if (isNaN(userId)) {
+        res._err = "Invalid user id";
+        return res.status(400).send(res._err);
+    }
+
+    // check if user exists
+    const user = await db.user.findUnique({
+        where: {
+            id: userId,
+        },
+    });
+    if (user === null) {
+        res._err = "User not found";
+        return res.status(404).send(res._err);
+    }
+
+    // check if user is not deleting himself
+    if (req.user?.id === userId) {
+        res._err = "You cannot delete yourself";
+        return res.status(400).send(res._err);
+    }
+
+    // delete user
+    await db.user.delete({
+        where: {
+            id: userId,
+        },
+    });
+
+    // delete user tokens
+    await db.userToken.deleteMany({
+        where: {
+            userId: userId,
+        },
+    });
+
+    return res.sendStatus(200);
+}
+
