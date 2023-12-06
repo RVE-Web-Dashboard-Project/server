@@ -5,8 +5,6 @@ import * as USR from "./user_controller";
 
 const router = express.Router();
 
-// ----- USER -----
-
 router.get("/", isAdminCheck, USR.listUsers);
 router.get("/me", isAuthenticatedCheck, USR.getMe);
 
@@ -14,12 +12,5 @@ router.post("/login", USR.login);
 router.post("/logout", isAuthenticatedCheck, USR.logout);
 router.post("/edit-password", isAuthenticatedCheck, USR.changePassword);
 
-// ----- INVITATION -----
-
-router.get("/invitation/:code", USR.getInvitationInfo);
-router.get("/invitation", isAdminCheck, USR.listInvitations);
-
-router.post("/invitation", isAdminCheck, USR.inviteUser);
-router.post("/invitation/:code", USR.acceptInvitation);
 
 export default router;

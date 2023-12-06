@@ -10,6 +10,7 @@ import morgan from "morgan";
 import { checkRequestAuthentication, initializeAuthentication } from "./auth/utils";
 import commandsRouter from "./components/commands/commands_router";
 import coordinatorRouter from "./components/coordinator/coordinator_router";
+import invitationRouter from "./components/invitation/invitation_router";
 import userRouter from "./components/user/user_router";
 import { checkEnvironmentVariables } from "./env.checks";
 import { createWsApp } from "./ws/createWsApp";
@@ -57,6 +58,7 @@ app.use(bodyParser.json());
 // add routers
 app.use("/commands", commandsRouter);
 app.use("/coordinator", coordinatorRouter);
+app.use("/invitation", invitationRouter);
 app.use("/user", userRouter);
 
 
