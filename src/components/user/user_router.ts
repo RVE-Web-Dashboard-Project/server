@@ -7,8 +7,8 @@ const router = express.Router();
 
 // ----- USER -----
 
+router.get("/", isAdminCheck, USR.listUsers);
 router.get("/me", isAuthenticatedCheck, USR.getMe);
-router.get("/list", isAdminCheck, USR.listUsers);
 
 router.post("/login", USR.login);
 router.post("/logout", isAuthenticatedCheck, USR.logout);
