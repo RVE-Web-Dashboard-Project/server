@@ -18,7 +18,7 @@ router.post("/edit-password", isAuthenticatedCheck, USR.changePassword);
 
 router.get("/invitation/:code", USR.getInvitationInfo);
 
-router.post("/invite", isAdminCheck, USR.inviteUser);
+router.post("/invitation", isAdminCheck, USR.inviteUser);
 router.post("/invitation/:code", USR.acceptInvitation);
 
 export default router;
