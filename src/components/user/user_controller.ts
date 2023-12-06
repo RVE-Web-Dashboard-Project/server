@@ -167,6 +167,24 @@ export async function deleteMe(req: Request<unknown, unknown, DeleteMyAccountPar
         return res.status(400).send(res._err);
     }
 
+    // check if user is not the last user
+    const users = await db.user.findMany();
+    if (users.length === 1) {
+        res._err = "There must be at least one user";
+        return res.status(400).send(res._err);
+    }
+
+    // check if user is not the last admin
+    const admins = await db.user.findMany({
+        where: {
+            isAdmin: true,
+        },
+    });
+    if (admins.length === 1 && admins[0].id === req.user.id) {
+        res._err = "There must be at least one admin";
+        return res.status(400).send(res._err);
+    }
+
     // delete user
     await db.user.delete({
         where: {
