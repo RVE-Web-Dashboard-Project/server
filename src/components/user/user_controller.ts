@@ -136,6 +136,19 @@ export async function changePassword(req: Request<unknown, unknown, ChangePasswo
     return res.sendStatus(200);
 }
 
+export async function listUsers(req: Request, res: Response) {
+    const users = await db.user.findMany({
+        select: {
+            id: true,
+            name: true,
+            isAdmin: true,
+            createdAt: true,
+        },
+    });
+    return res.status(200).send(users);
+}
+
+
 export async function inviteUser(req: Request<unknown, unknown, InviteUserParams>, res: Response) {
     if (req.user === undefined) {
         res._err = "Unauthorized";
