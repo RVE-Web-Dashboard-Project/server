@@ -13,6 +13,6 @@ router.post("/logout", isAuthenticatedCheck, USR.logout);
 router.post("/edit-password", isAuthenticatedCheck, USR.editPassword);
 
 router.delete("/me", isAuthenticatedCheck, USR.deleteMe);
-
+router.delete("/:id", isAdminCheck, USR.deleteUser);
 
 export default router;
