@@ -10,6 +10,18 @@ const db = Database.getInstance();
 
 const JWT_EXPIRATION_PERIOD = process.env.JWT_TOKEN_EXPIRATION_DAYS + "d";
 
+export async function listUsers(req: Request, res: Response) {
+    const users = await db.user.findMany({
+        select: {
+            id: true,
+            name: true,
+            isAdmin: true,
+            createdAt: true,
+        },
+    });
+    return res.status(200).send(users);
+}
+
 export async function getMe(req: Request, res: Response) {
     if (!req.user) {
         res._err = "Unauthorized";
@@ -91,7 +103,7 @@ export async function logout(req: Request, res: Response) {
     return res.sendStatus(200);
 }
 
-export async function changePassword(req: Request<unknown, unknown, ChangePasswordParams>, res: Response) {
+export async function editPassword(req: Request<unknown, unknown, ChangePasswordParams>, res: Response) {
     // check arguments existense
     if (!is<ChangePasswordParams>(req.body)) {
         res._err = "Missing or invalid arguments";
@@ -133,17 +145,5 @@ export async function changePassword(req: Request<unknown, unknown, ChangePasswo
     });
 
     return res.sendStatus(200);
-}
-
-export async function listUsers(req: Request, res: Response) {
-    const users = await db.user.findMany({
-        select: {
-            id: true,
-            name: true,
-            isAdmin: true,
-            createdAt: true,
-        },
-    });
-    return res.status(200).send(users);
 }
 
