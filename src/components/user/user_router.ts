@@ -12,5 +12,7 @@ router.post("/login", USR.login);
 router.post("/logout", isAuthenticatedCheck, USR.logout);
 router.post("/edit-password", isAuthenticatedCheck, USR.editPassword);
 
+router.delete("/me", isAuthenticatedCheck, USR.deleteMe);
+
 
 export default router;
