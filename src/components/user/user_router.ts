@@ -10,7 +10,7 @@ router.get("/me", isAuthenticatedCheck, USR.getMe);
 
 router.post("/login", USR.login);
 router.post("/logout", isAuthenticatedCheck, USR.logout);
-router.post("/edit-password", isAuthenticatedCheck, USR.changePassword);
+router.post("/edit-password", isAuthenticatedCheck, USR.editPassword);
 
 
 export default router;
