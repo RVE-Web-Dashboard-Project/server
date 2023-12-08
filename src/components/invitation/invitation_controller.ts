@@ -174,5 +174,32 @@ export async function acceptInvitation(req: Request<{code: string}, unknown, Acc
         createdAt: user.createdAt,
         token: token,
     });
+}
 
+export async function deleteInvitation(req: Request<{code: string}>, res: Response) {
+    // get invitation from code
+    const invitation = await db.userInvitation.findUnique({
+        where: {
+            id: req.params.code,
+        },
+    });
+    if (invitation === null) {
+        res._err = "Invalid invitation code";
+        return res.status(404).send(res._err);
+    }
+
+    // check if user is the inviter (or admin)
+    if (req.user === undefined || (req.user.id !== invitation.inviterId && !req.user.isAdmin)) {
+        res._err = "Unauthorized";
+        return res.status(401).send(res._err);
+    }
+
+    // delete invitation
+    await db.userInvitation.delete({
+        where: {
+            id: invitation.id,
+        },
+    });
+
+    return res.sendStatus(200);
 }
