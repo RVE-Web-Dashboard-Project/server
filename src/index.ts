@@ -6,6 +6,7 @@ import ConsoleStamp from "console-stamp";
 import cors from "cors";
 import dateformat from "dateformat";
 import morgan from "morgan";
+import cron from "node-cron";
 
 import { checkRequestAuthentication, initializeAuthentication } from "./auth/utils";
 import commandsRouter from "./components/commands/commands_router";
@@ -13,6 +14,7 @@ import coordinatorRouter from "./components/coordinator/coordinator_router";
 import invitationRouter from "./components/invitation/invitation_router";
 import userRouter from "./components/user/user_router";
 import { checkEnvironmentVariables } from "./env.checks";
+import { cronTasks } from "./tasks/cron_tasks";
 import { createWsApp } from "./ws/createWsApp";
 
 // instanciate express app
@@ -67,6 +69,12 @@ app.get("/", async (req, res) => {
     const isAuthenticated = await checkRequestAuthentication(req);
     res.send({ version: process.env.npm_package_version, isAuthenticated });
 });
+
+
+// add CRON tasks
+for (const [schedule, task] of Object.entries(cronTasks)) {
+    cron.schedule(schedule, task);
+}
 
 
 // start server
