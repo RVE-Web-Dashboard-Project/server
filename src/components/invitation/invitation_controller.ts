@@ -20,7 +20,20 @@ export async function listInvitations(req: Request, res: Response) {
             createdAt: true,
         },
     });
-    return res.status(200).send(invitations);
+    const invitationsWithInviterName = [];
+    for (const invite of invitations) {
+        // get inviter from ID
+        const inviter = await db.user.findUnique({
+            where: {
+                id: invite.inviterId,
+            },
+        });
+        invitationsWithInviterName.push({
+            ...invite,
+            inviter: inviter?.name,
+        });
+    }
+    return res.status(200).send(invitationsWithInviterName);
 }
 
 export async function inviteUser(req: Request<unknown, unknown, InviteUserParams>, res: Response) {
