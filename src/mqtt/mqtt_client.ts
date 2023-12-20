@@ -49,6 +49,10 @@ export default class MQTTClient {
                     console.error("MQTT subscription failed:", err);
                     return;
                 }
+                if (req.length === 0) {
+                    console.error("MQTT subscription failed: no topics subscribed");
+                    return;
+                }
                 console.log(`MQTT client subscribed to topics '${req.map((r) => r.topic).join("', '")}'`);
               });
         });
