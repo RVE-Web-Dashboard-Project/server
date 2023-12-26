@@ -88,6 +88,18 @@ export function createWsApp(app: Express) {
         });
     });
 
+    eventEmitter.on("coordinators_map_update", (data) => {
+        const json = JSON.stringify({
+            type: "coordinators_map_update",
+            data,
+        });
+        wss.clients.forEach(client => {
+            if (client.readyState === 1) {
+                client.send(json);
+            }
+        });
+    });
+
     eventEmitter.on("test_body", (json) => {
         if (process.env.NODE_ENV === "development") {
             const data = JSON.stringify(json);
