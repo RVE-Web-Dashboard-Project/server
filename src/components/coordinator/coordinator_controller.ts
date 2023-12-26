@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { is } from "typia";
 
 import Database from "../../database";
+import { eventEmitter } from "../../ws/event_emitter";
 
 const db = Database.getInstance();
 
@@ -47,6 +48,8 @@ export async function editNodes(req: Request<unknown, unknown, EditNodesParams>,
     for (const node of nodes) {
         await db.coordinatorNode.create({ data: node });
     }
+
+    eventEmitter.emit("coordinators_map_update", await getNodesMap());
 
     return res.status(200).send("ok");
 }
