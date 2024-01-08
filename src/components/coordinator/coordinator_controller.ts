@@ -34,6 +34,14 @@ export async function editNodes(req: Request<unknown, unknown, EditNodesParams>,
         return res.status(400).send(res._err);
     }
 
+    // check node ID uniqueness for each coordinator
+    for (const [coordinatorId, nodeIds] of Object.entries(req.body)) {
+        if (nodeIds.length !== new Set(nodeIds).size) {
+            res._err = `Node IDs must be unique (found duplicated IDs in coordinator ${coordinatorId})`;
+            return res.status(400).send(res._err);
+        }
+    }
+
     // remove all coordinators from database
     await db.coordinator.deleteMany();
 
