@@ -9,8 +9,7 @@ export interface AckResponse {
     coord_id: number;
     node_id: number;
     params: {
-        param1: number,
-        param2: 0,
+        param1: number
     }
 }
 
@@ -19,8 +18,7 @@ export interface NoAckResponse {
     coord_id: number;
     node_id: number;
     params: {
-        param1: number,
-        param2: 0,
+        param1: number
     }
 }
 
@@ -29,8 +27,7 @@ export interface PingResponse {
     coord_id: number;
     node_id: number;
     params: {
-        param1: 0,
-        param2: 0,
+        param1: 0
     }
 }
 
@@ -39,8 +36,7 @@ export interface GetRestartCountResponse {
     coord_id: number;
     node_id: number;
     params: {
-        param1: number,
-        param2: 0,
+        param1: number
     }
 }
 
@@ -49,8 +45,7 @@ export interface SetRestartCountResponse {
     coord_id: number;
     node_id: number;
     params: {
-        param1: 0,
-        param2: 0,
+        param1: 0
     }
 }
 
@@ -59,8 +54,7 @@ export interface SanityCheckResponse {
     coord_id: number;
     node_id: number;
     params: {
-        param1: 0,
-        param2: 0,
+        param1: 0
     }
 }
 
@@ -69,8 +63,7 @@ export interface GetNonResponseCountResponse {
     coord_id: number;
     node_id: 0;
     params: {
-        param1: number,
-        param2: 0,
+        param1: number
     }
 }
 
@@ -79,8 +72,7 @@ export interface GetSamplingTimeResponse {
     coord_id: number;
     node_id: 0;
     params: {
-        param1: number,
-        param2: 0,
+        param1: number
     }
 }
 
@@ -89,8 +81,7 @@ export interface SetSamplingTimeResponse {
     coord_id: number;
     node_id: 0;
     params: {
-        param1: 0,
-        param2: 0,
+        param1: 0
     }
 }
 
@@ -99,8 +90,7 @@ export interface PauseSamplingResponse {
     coord_id: number;
     node_id: 0;
     params: {
-        param1: 0,
-        param2: 0,
+        param1: 0
     }
 }
 
@@ -109,8 +99,7 @@ export interface ResumeSamplingResponse {
     coord_id: number;
     node_id: 0;
     params: {
-        param1: 1,
-        param2: 0,
+        param1: 1
     }
 }
 
@@ -119,8 +108,7 @@ export interface GetSamplingStateResponse {
     coord_id: number;
     node_id: 0;
     params: {
-        param1: 0 | 1,
-        param2: 0,
+        param1: 0 | 1
     }
 }
 
