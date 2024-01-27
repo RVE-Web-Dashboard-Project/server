@@ -92,6 +92,8 @@ export async function sendCommand(req: Request<unknown, unknown, SendCommandPara
     // Building ID is currently ignored by coordinators, so we use a dummy value
     const buildingId = 1;
 
+    const orderId = req.body.orderId;
+
     // check MQTT broker connection
     if (!mqttClient.connected) {
         res._err = "MQTT broker not connected";
@@ -103,10 +105,10 @@ export async function sendCommand(req: Request<unknown, unknown, SendCommandPara
         for (const coordinatorId of req.body.coordinatorIds) {
             if (command.targetType === "coordinator") {
                 // does not need a node ID
-                await mqttClient.sendCommand(command.id, buildingId, coordinatorId, 0, parameters);
+                await mqttClient.sendCommand(command.id, buildingId, coordinatorId, 0, orderId, parameters);
             } else {
                 for (const nodeId of coordinatorToNodesMap.get(coordinatorId) ?? []) {
-                    await mqttClient.sendCommand(command.id, buildingId, coordinatorId, nodeId, parameters);
+                    await mqttClient.sendCommand(command.id, buildingId, coordinatorId, nodeId, orderId, parameters);
                 }
             }
         }

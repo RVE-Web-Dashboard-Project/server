@@ -112,12 +112,13 @@ export default class MQTTClient {
         }
     }
 
-    async sendCommand(commandId: Command["id"], buildingId: number, coordinatorId: number, nodeId: number, parameters: number[]) {
+    async sendCommand(commandId: Command["id"], buildingId: number, coordinatorId: number, nodeId: number, orderId: number | undefined, parameters: number[]) {
         const data = {
             "command": commandId,
             "building_id": buildingId,
             "coord_id": coordinatorId,
             "node_id": nodeId,
+            "order_id": orderId,
             "params": {
                 "param1": parameters[0] ?? 0,
                 "param2": parameters[1] ?? 0,
