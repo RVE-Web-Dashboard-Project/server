@@ -92,7 +92,7 @@ export async function sendCommand(req: Request<unknown, unknown, SendCommandPara
     // Building ID is currently ignored by coordinators, so we use a dummy value
     const buildingId = 1;
 
-    const orderId = req.body.orderId;
+    const orderId = MQTTClient.getNewOrderId();
 
     // check MQTT broker connection
     if (!mqttClient.connected) {
@@ -118,7 +118,7 @@ export async function sendCommand(req: Request<unknown, unknown, SendCommandPara
         return res.status(500).send(res._err);
     }
 
-    return res.sendStatus(200);
+    return res.status(202).send({ orderId });
 }
 
 export async function testWSConnection(req: Request, res: Response) {

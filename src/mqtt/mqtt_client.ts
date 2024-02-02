@@ -12,11 +12,17 @@ export default class MQTTClient {
 
     private currentStatus = MQTTConnectionStatus.Disconnected;
 
+    public static lastOrderId = 0;
+
     public static getInstance(): MQTTClient {
         if (!MQTTClient.instance) {
             MQTTClient.instance = new MQTTClient();
         }
         return MQTTClient.instance;
+    }
+
+    public static getNewOrderId() {
+        return MQTTClient.lastOrderId++;
     }
 
     private constructor() {
